@@ -28,7 +28,6 @@ class BitPatternGroup {
   ///   non-variable bits in B, A is returned.  In the reverse situation, B is
   ///   returned.
   ///
-  /// Assume we have N matched patterns, where N > 2. Then we
   /// Note that it is impossible for the number of non-variable bits in A to be
   /// equal to the number of non-variable bits in B, when A and B have different
   /// non-variable bit patterns.  In this case, A or B would not have matched
