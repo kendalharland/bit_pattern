@@ -1,4 +1,4 @@
-import 'package:binary/binary.dart';
+import 'package:binary/binary.dart' hide bit;
 import 'package:bit_pattern/bit_pattern.dart';
 import 'package:test/test.dart';
 
@@ -7,18 +7,18 @@ void main() {
     /// A bit pattern matching the 3 data-processing instruction encodings of
     /// the ARM armv4t instruction set.
     final dataProcessing = new BitPattern([
-      v(4, 'cond'), // 31 - 28
+      nibble('cond'), // 31 - 28
       0, // 27
       0, // 26
-      v(1, 'I'), // 25
-      v(4, 'opcode'), // 24 - 21
-      v(1, 'S'), // 20
-      v(4, 'Rn'), // 19 - 16
-      v(4, 'Rd'), // 15 - 12
-      v(5, 'shiftAmt'), // 11 - 7
-      v(2, 'shift'), // 6 - 5
-      v(1, '_'), // 4
-      v(4, 'Rm') // 3 - 0
+      bit('I'), // 25
+      nibble('opcode'), // 24 - 21
+      bit('S'), // 20
+      nibble('Rn'), // 19 - 16
+      nibble('Rd'), // 15 - 12
+      bits(5, 'shiftAmt'), // 11 - 7
+      bits(2, 'shift'), // 6 - 5
+      bit('_'), // 4
+      nibble('Rm') // 3 - 0
     ]);
 
     const nonVarBits = const <int>[27, 26];
@@ -116,8 +116,9 @@ void main() {
     test('match', () {
       final patternA = new BitPattern([0, 1, 0, 1]);
       final patternB = new BitPattern([0, 0, 0, 0]);
-      final patternC = new BitPattern([0, v(2, 'c'), 1]);
-      final patternD = new BitPattern([0, v(3, 'd')]);
+
+      final patternC = new BitPattern([0, bits(2, 'c'), 1]);
+      final patternD = new BitPattern([0, bits(3, 'd')]);
 
       final patternGroup = new BitPatternGroup([
         patternB,
@@ -137,6 +138,13 @@ void main() {
       expect(patternGroup.match(bitsCandD1), patternC);
       expect(patternGroup.match(bitsCandD2), patternC);
       expect(patternGroup.match(bitsD), patternD);
+
+      final patternE = new BitPattern([nibble('e')]);
+      final patternF = new BitPattern([nibble('f')]);
+      final allVariableGroup = new BitPatternGroup([patternE, patternF]);
+
+      expect(() => allVariableGroup.match(0xF),
+          throwsA(new isInstanceOf<BitPatternException>()));
     });
   });
 }

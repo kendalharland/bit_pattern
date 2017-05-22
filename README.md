@@ -9,7 +9,7 @@ Patterns can be created from a sequence of 0s, 1s and variable length chunks.
 ```dart
 // Create a pattern that matches any integer whose most significant byte is
 // 0x6 and whose least significant byte is anything.
-var pattern = new BitPattern([0, 1, 1, 0, v(4, 'lsb')]); 
+var pattern = new BitPattern([0, 1, 1, 0, nibble('lsb')]); 
 ```
 
 The pattern can be used to determine whether an integer uses an equivalent bit sequence.
@@ -35,8 +35,8 @@ non-variable bits is returned.  If two or more matched patterns have an identica
 these two patterns are incompatible and a BitPatternException is raised.
 ```dart
 var pattern0xE = new BitPattern([0, 1, 1, 1]);
-var patternAny1 = new BitPattern([v(4, 'any1')]);
-var patternAny2 = new BitPattern([v(4, 'any2')]);
+var patternAny1 = new BitPattern([nibble('any1')]);
+var patternAny2 = new BitPattern([nibble('any2')]);
 var patternGroup = new BitPatternGroup([patternAny1, pattern0xE, patternAny2]);
 
 patternGroup.match(0xE) == pattern0xE; // true
