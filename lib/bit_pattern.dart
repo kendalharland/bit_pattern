@@ -84,7 +84,7 @@ class BitPattern {
   final _flattened = <String>[];
   String _asString;
 
-  BitPattern(List<_PatternPart> parts) {
+  BitPattern(List parts) {
     _parts.addAll(parts.map((p) => new _PatternPart.from(p)));
     _parts.forEach((part) {
       _flattened.addAll(part.flattened);
