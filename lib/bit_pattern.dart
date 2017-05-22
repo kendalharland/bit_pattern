@@ -3,6 +3,10 @@ library bit_pattern;
 import 'package:binary/binary.dart';
 import 'package:collection/collection.dart';
 
+/// Returns a variable chunk of a [BitPattern] with [length] and [name].
+///
+/// Both [name] and [length] are used when converting a [BitPattern] to a
+/// string.
 _Variable v(int length, String name) => new _Variable(length, name);
 
 /// Allows matching integer values against a collection of [BitPattern].
