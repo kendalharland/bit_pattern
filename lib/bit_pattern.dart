@@ -2,6 +2,7 @@ library bit_pattern;
 
 import 'package:binary/binary.dart';
 import 'package:collection/collection.dart';
+import 'package:meta/meta.dart';
 
 /// Returns a variable chunk of a [BitPattern] with [length] and [name].
 ///
@@ -50,7 +51,7 @@ class BitPatternGroup {
         } else if (specificity == _Specificity.lesser) {
           continue;
         } else if (specificity == _Specificity.equal) {
-          throw new Exception();
+          throw const BitPatternException();
         }
       }
       matched = champion;
@@ -159,6 +160,11 @@ class BitPattern {
 
     return buffer.toString().trimRight();
   }
+}
+
+class BitPatternException implements Exception {
+  @literal
+  const BitPatternException();
 }
 
 /// Represents a variable chunk of bits in a [BitPattern].
