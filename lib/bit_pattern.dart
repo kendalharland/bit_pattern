@@ -3,7 +3,6 @@ library bit_pattern;
 import 'package:binary/binary.dart';
 import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
-import 'package:quiver/strings.dart';
 
 /// Returns a variable bit, optionally named [name].
 _Variable bit([String name = '']) => bits(1, name);
@@ -202,7 +201,7 @@ class _Variable implements _PatternPart {
 
   @override
   String toString() {
-    var nameStr = isEmpty(name) ? '?' : name;
+    var nameStr = name == null || name.isEmpty ? '?' : name;
     if (length > 1) {
       return '$nameStr{$length}';
     } else {
