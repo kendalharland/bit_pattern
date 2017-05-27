@@ -126,7 +126,7 @@ class BitPattern {
     // * Let N be the result of _NonVarMask(this), then N & E == N iff the
     //   non-variable bits in this pattern are identical to their counterparts
     //   in input.
-    return (~(input ^ _isSetMask)) & _nonVarMask == _nonVarMask;
+    return ~(input ^ _isSetMask) & _nonVarMask == _nonVarMask;
   }
 
   /// Computes whether this pattern is more specific than [other].
