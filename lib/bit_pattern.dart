@@ -116,7 +116,8 @@ class BitPattern {
 
   /// Returns true iff [input] matches this pattern.
   ///
-  /// This pattern will only compare bits in the closed interval (0, [length]).
+  /// The comparison runs in constant time with respect to [length] and only
+  /// matches against the bits on the closed interval (0, [length]).
   bool matches(int input) {
     // * Let S be the result of _IsSetMask(this).
     //
