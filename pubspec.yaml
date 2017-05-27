@@ -3,7 +3,7 @@ description: >
   Bit sequence matchers for building emulators in Dart.
 author: Kendal Harland <kendaljharland@gmail.com>
 homepage: https://github.com/kharland/bit_pattern
-version: 0.0.3-alpha
+version: 0.0.4-alpha
 environment:
   sdk: '>=1.22.0 <2.0.0'
 dependencies:

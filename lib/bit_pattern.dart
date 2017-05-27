@@ -83,11 +83,17 @@ class BitPattern {
   final _flattened = <String>[];
   String _asString;
 
+  int _isSetMask = 0;
+  int _nonVarMask = 0;
+
   BitPattern(List parts) {
     _parts.addAll(parts.map((p) => new _PatternPart.from(p)));
     _parts.forEach((part) {
       _flattened.addAll(part.flattened);
     });
+
+    _isSetMask = _IsSetMask(this);
+    _nonVarMask = _NonVarMask(this);
   }
 
   @override
@@ -108,16 +114,20 @@ class BitPattern {
   /// Returns true iff bit [n] is variable.
   bool isVar(int n) => n < length && _flattened[length - n - 1] == _FLATV;
 
-  /// Returns true iff the integer [bits] matches this pattern.
+  /// Returns true iff [input] matches this pattern.
   ///
-  /// This pattern will only compare bits in the closed interval (0, [length]).
-  bool matches(int bits) {
-    for (int i = 0; i < length; i++) {
-      var bit = getBit(bits, i);
-      if (isVar(i)) continue;
-      if (bit == 0 && !is0(i) || bit == 1 && !is1(i)) return false;
-    }
-    return true;
+  /// The comparison runs in constant time with respect to [length] and only
+  /// matches against the bits on the closed interval (0, [length]).
+  bool matches(int input) {
+    // * Let S be the result of _IsSetMask(this).
+    //
+    // * Let E be the result of ~(input ^ S), then bit k of E == 1 iff bit k of
+    //   input == bit k of S.
+    //
+    // * Let N be the result of _NonVarMask(this), then N & E == N iff the
+    //   non-variable bits in this pattern are identical to their counterparts
+    //   in input.
+    return ~(input ^ _isSetMask) & _nonVarMask == _nonVarMask;
   }
 
   /// Computes whether this pattern is more specific than [other].
@@ -208,6 +218,42 @@ class _Variable implements _PatternPart {
       return '$nameStr';
     }
   }
+}
+
+/// Returns the "Is set mask" for [pattern].
+///
+/// The Is set mask is an integer whose k'th bit == 1 iff bit k of [pattern] ==
+/// 1.
+///
+/// Examples: (v == a variable bit)
+///   _IsSetMask({1,1,1,1}) == 0xF == 1111
+///   _IsSetMask({1,1,v,1}) == 0xD == 1101
+///   _IsSetMask({0,0,0,0}) == 0x0 == 0000
+///   _IsSetMask({1,0,1,v}) == 0xA == 1010
+int _IsSetMask(BitPattern pattern) {
+  int mask = 0;
+  for (int i = 0; i < pattern.length; i++) {
+    if (pattern.is1(i)) mask = setBit(mask, i);
+  }
+  return mask;
+}
+
+/// Returns the "Non-variable mask" for [pattern].
+///
+/// The Non-variable mask is an integer whose k'th bit == 1 iff bit k of
+/// [pattern] is non-variable.
+///
+/// Examples: (v == a variable bit)
+///   _NonVarMask({1,1,1,1}) == 0xF == 1111
+///   _NonVarMask({1,1,v,1}) == 0xD == 1101
+///   _NonVarMask({0,0,0,0}) == 0xF == 1111
+///   _NonVarMask({1,0,1,v}) == 0xE == 1110
+int _NonVarMask(BitPattern pattern) {
+  int mask = 0;
+  for (int i = 0; i < pattern.length; i++) {
+    if (!pattern.isVar(i)) mask = setBit(mask, i);
+  }
+  return mask;
 }
 
 /// Flattened representation of a 1 bit

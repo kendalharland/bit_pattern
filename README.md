@@ -7,8 +7,8 @@ Bit sequence matchers for building emulators in Dart.
 ## Creating a pattern
 Patterns can be created from a sequence of 0s, 1s and variable length chunks.
 ```dart
-// Create a pattern that matches any integer whose most significant byte is
-// 0x6 and whose least significant byte is anything.
+// Create a pattern that matches any integer whose most significant nibble is
+// 0x6 and whose least significant nibble is anything.
 var pattern = new BitPattern([0, 1, 1, 0, nibble('lsb')]); 
 ```
 
