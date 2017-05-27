@@ -74,10 +74,21 @@ class BitPatternGroup {
 
 /// Represents a sequence of binary digits.
 ///
-/// The sequence may contain only 0's and 1's and variable length chunks.  The
-/// pattern's indices can be queried using [is0], [is1] and [isVar], and the
-/// pattern can be matched against integer values.  Variable sections in a
-/// sequence can be represented using [bits].
+/// The pattern may contain only 0s, 1s and variable length segments.  Variable
+/// length segments can be created using [bits]. The pattern's indices can be
+/// queried using [is0], [is1] and [isVar].
+///
+/// The pattern is used to determine whether some integer has a matching binary
+/// representation.  For example:
+///
+///   ```
+///   // A pattern that matches any integer whose 3 least significant bits are
+///   // 0, 1, 1.
+///   final pattern = new BitPattern([bit(), 0, 1, 1]);
+///   pattern.matches(0x3); // == true
+///   pattern.matches(0xB); // == true
+///   pattern.matches(0xF); // == false
+///   ```
 class BitPattern {
   final _parts = <_PatternPart>[];
   final _flattened = <String>[];
@@ -202,7 +213,6 @@ class _Variable implements _PatternPart {
   /// The name of this chunk.
   final String name;
 
-  /// A single-item list containing [bit] as a string.
   @override
   final List<String> flattened;
 
@@ -212,11 +222,7 @@ class _Variable implements _PatternPart {
   @override
   String toString() {
     var nameStr = name == null || name.isEmpty ? '?' : name;
-    if (length > 1) {
-      return '$nameStr{$length}';
-    } else {
-      return '$nameStr';
-    }
+    return length > 1 ? '$nameStr{$length}' : '$nameStr';
   }
 }
 
